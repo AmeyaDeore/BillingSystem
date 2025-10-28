@@ -1,0 +1,65 @@
+===============================================================
+    HOW TO RUN THE ELECTRICITY BILLING SYSTEM
+===============================================================
+
+QUICKEST WAY - JUST DOUBLE-CLICK:
+----------------------------------
+  >>  START.bat  <<
+  
+That's it! The application will launch automatically.
+
+
+DETAILED OPTIONS:
+-----------------
+
+1. START.bat (RECOMMENDED)
+   - Automatically checks if compilation is needed
+   - Compiles if source files have changed
+   - Launches the application immediately
+   - Best for daily use
+   - Just double-click and go!
+
+2. launch.bat
+   - Compiles and runs in one step
+   - Useful when you've modified code
+   - Always compiles before running
+
+3. compile.bat (then run.bat)
+   - Manual two-step process
+   - Use compile.bat first to compile
+   - Then use run.bat to launch
+   - Good for advanced users
+
+4. run.bat (standalone)
+   - Only runs the application
+   - Assumes already compiled
+   - Fastest if no code changes
+
+
+FOR FIRST TIME USERS:
+---------------------
+1. Make sure Java is installed (java -version in cmd)
+2. Double-click START.bat
+3. The application will compile automatically
+4. Login with: admin / 12345
+
+
+TROUBLESHOOTING:
+----------------
+- "Java not found" → Install Java JDK 8 or higher
+- "Compilation failed" → Check src folder has all .java files
+- "Class not found" → Delete bin folder and run START.bat again
+- Application not starting → Delete bin folder and run START.bat again
+
+
+FILES EXPLAINED:
+----------------
+START.bat  → Quick launcher (RECOMMENDED - Use this!)
+run.bat    → Run only (must be compiled first)
+
+Source code: src/com/billing/
+Compiled files: bin/com/billing/
+Data files: users.dat, user_bills.dat
+
+===============================================================
+

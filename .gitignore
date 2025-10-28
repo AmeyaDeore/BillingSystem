@@ -1,0 +1,30 @@
+# Compiled Java files
+*.class
+bin/
+
+# User data files (not tracked for privacy)
+users.dat
+user_bills.dat
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Build artifacts
+target/
+build/
+dist/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.swp
+*~

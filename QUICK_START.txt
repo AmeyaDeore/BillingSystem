@@ -1,0 +1,40 @@
+=================================================================
+  ELECTRICITY BILLING SYSTEM - QUICK START GUIDE
+=================================================================
+
+TO LAUNCH THE APPLICATION:
+--------------------------
+1. Simply DOUBLE-CLICK on "START.bat"
+
+That's it! The application will compile (if needed) and launch automatically.
+
+FILES EXPLAINED:
+----------------
+START.bat  - Quick launcher (RECOMMENDED - Just double-click this!)
+run.bat    - Run the application only (must be compiled first)
+
+WHICH FILE SHOULD I USE?
+-------------------------
+- FOR EVERYONE: Just use START.bat (It compiles automatically if needed)
+- ALREADY COMPILED: You can use run.bat for faster startup
+
+Note: START.bat is all you need - it handles everything automatically!
+
+DEFAULT LOGIN:
+--------------
+Username: admin
+Password: 12345
+
+Or create your own account using the Sign Up button!
+
+TROUBLESHOOTING:
+---------------
+If the application doesn't start:
+1. Make sure Java is installed (java -version in cmd)
+2. Run compile.bat first to see any compilation errors
+3. Check that libs/mysql-connector-j-9.5.0.jar exists
+
+For help, check README.md or PROJECT_SUMMARY.md
+
+=================================================================
+
