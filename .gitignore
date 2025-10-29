@@ -6,6 +6,10 @@ bin/
 users.dat
 user_bills.dat
 
+# Local configuration and secrets
+config.properties
+*.local.properties
+
 # IDE files
 .vscode/
 .idea/

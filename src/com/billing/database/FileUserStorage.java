@@ -1,5 +1,6 @@
 package com.billing.database;
 
+import com.billing.security.SecurityUtil;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,21 +23,32 @@ public class FileUserStorage {
     }
     
     /**
-     * Authenticate a user
+     * Authenticate a user. Supports both legacy plaintext (value = password)
+     * and hashed format (value = salt|hash).
      */
     public static boolean authenticate(String username, String password) {
-        String storedPassword = users.get(username);
-        return storedPassword != null && storedPassword.equals(password);
+        String stored = users.get(username);
+        if (stored == null) return false;
+        int sep = stored.indexOf('|');
+        if (sep > 0) {
+            String salt = stored.substring(0, sep);
+            String hash = stored.substring(sep + 1);
+            return SecurityUtil.verifyPassword(password.toCharArray(), salt, hash);
+        }
+        // legacy plaintext
+        return stored.equals(password);
     }
     
     /**
-     * Register a new user
+     * Register a new user. Stores salted+hashed credentials in the format salt|hash
      */
     public static boolean registerUser(String username, String password) {
         if (users.containsKey(username)) {
             return false; // Username already exists
         }
-        users.put(username, password);
+        String salt = SecurityUtil.generateSalt();
+        String hash = SecurityUtil.hashPassword(password.toCharArray(), salt);
+        users.put(username, salt + "|" + hash);
         saveUsers();
         return true;
     }
@@ -60,10 +72,12 @@ public class FileUserStorage {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":");
-                if (parts.length == 2) {
-                    users.put(parts[0], parts[1]);
-                }
+                if (line.trim().isEmpty()) continue;
+                String[] parts = line.split(":", 2);
+                if (parts.length != 2) continue;
+                String username = parts[0];
+                String value = parts[1];
+                users.put(username, value);
             }
             System.out.println("Loaded " + users.size() + " users from file");
         } catch (IOException e) {

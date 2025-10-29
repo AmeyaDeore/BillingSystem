@@ -1,5 +1,6 @@
 package com.billing.database;
 
+import com.billing.config.AppConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,10 +12,10 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 
-    // --- Configuration ---
-    private static final String URL = "jdbc:mysql://localhost:3306/electricity_billing";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = ""; // Change this to your MySQL password
+    // Values are read from AppConfig (config.properties or defaults)
+    private static final String URL = AppConfig.getDbUrl();
+    private static final String USERNAME = AppConfig.getDbUser();
+    private static final String PASSWORD = AppConfig.getDbPassword();
 
     /**
      * Attempts to create and return a connection to the database.

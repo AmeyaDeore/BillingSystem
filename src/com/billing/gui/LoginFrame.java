@@ -1,5 +1,6 @@
 package com.billing.gui;
 
+import com.billing.config.AppConfig;
 import com.billing.database.DatabaseConnection;
 import com.billing.database.FileUserStorage;
 import javax.swing.*;
@@ -153,22 +154,25 @@ public class LoginFrame extends JFrame {
             return;
         }
         
-        // Check if user exists
+        // Check if user exists (only relevant for file mode messaging)
         boolean userExists = FileUserStorage.userExists(username);
         
-        // Try file-based authentication
-        if (FileUserStorage.authenticate(username, password)) {
+        String mode = AppConfig.getAuthMode(); // file | db | hybrid
+        boolean ok = false;
+        if ("file".equals(mode)) {
+            ok = FileUserStorage.authenticate(username, password);
+        } else if ("db".equals(mode)) {
+            ok = tryDatabaseAuth(username, password);
+        } else { // hybrid (default): file first, then db
+            ok = FileUserStorage.authenticate(username, password) || tryDatabaseAuth(username, password);
+        }
+        if (ok) {
             showSuccessAndNavigate(username);
             return;
         }
         
-        // If file auth fails, try database
-        if (tryDatabaseAuth(username, password)) {
-            return;
-        }
-        
         // Authentication failed - show appropriate error
-        if (!userExists) {
+        if ("file".equals(mode) && !userExists) {
             errorLabel.setText("Username and password are incorrect!");
         } else {
             errorLabel.setText("Password is incorrect!");
