@@ -2,6 +2,7 @@ package com.billing.gui;
 
 import com.billing.database.DatabaseConnection;
 import com.billing.database.FileUserStorage;
+import com.billing.security.SecurityUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -169,6 +170,22 @@ public class SignupFrame extends JFrame {
         }
         
         if (FileUserStorage.registerUser(username, password)) {
+            // Also try to persist to DB (best-effort)
+            try (Connection conn = DatabaseConnection.getConnection()) {
+                if (conn != null) {
+                    String salt = SecurityUtil.generateSalt();
+                    String hash = SecurityUtil.hashPassword(password.toCharArray(), salt);
+                    String value = salt + "|" + hash;
+                    try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO users (username, password) VALUES (?, ?) ON DUPLICATE KEY UPDATE password = VALUES(password)")) {
+                        ps.setString(1, username);
+                        ps.setString(2, value);
+                        ps.executeUpdate();
+                    }
+                }
+            } catch (SQLException ex) {
+                System.err.println("Warning: DB write for signup failed: " + ex.getMessage());
+            }
             // Show success message for 2 seconds
             JDialog successDialog = new JDialog(this, "Success", false);
             successDialog.setSize(300, 150);

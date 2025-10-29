@@ -24,17 +24,17 @@ public final class AppConfig {
     private AppConfig() {}
 
     /**
-     * Auth mode can be one of: file, db, hybrid (default: hybrid)
+     * Auth mode can be one of: file, db, hybrid (default: db)
      */
     public static String getAuthMode() {
-        String mode = PROPS.getProperty("auth.mode", "hybrid").trim().toLowerCase();
+        String mode = PROPS.getProperty("auth.mode", "db").trim().toLowerCase();
         switch (mode) {
             case "file":
             case "db":
             case "hybrid":
                 return mode;
             default:
-                return "hybrid";
+                return "db";
         }
     }
 

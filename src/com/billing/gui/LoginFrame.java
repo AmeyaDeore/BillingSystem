@@ -3,6 +3,7 @@ package com.billing.gui;
 import com.billing.config.AppConfig;
 import com.billing.database.DatabaseConnection;
 import com.billing.database.FileUserStorage;
+import com.billing.security.SecurityUtil;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -138,7 +139,7 @@ public class LoginFrame extends JFrame {
             }
         });
         
-        System.out.println("LoginFrame created (File Storage Mode)");
+        System.out.println("LoginFrame created (auth.mode=" + AppConfig.getAuthMode() + ")");
         setVisible(true);
     }
     
@@ -236,16 +237,25 @@ public class LoginFrame extends JFrame {
                 return false;
             }
             
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT password FROM users WHERE username = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-            
             resultSet = preparedStatement.executeQuery();
-            
             if (resultSet.next()) {
-                showSuccessAndNavigate(username);
-                return true;
+                String stored = resultSet.getString(1);
+                boolean ok;
+                int sep = stored != null ? stored.indexOf('|') : -1;
+                if (stored != null && sep > 0) {
+                    String salt = stored.substring(0, sep);
+                    String hash = stored.substring(sep + 1);
+                    ok = SecurityUtil.verifyPassword(password.toCharArray(), salt, hash);
+                } else {
+                    ok = stored != null && stored.equals(password);
+                }
+                if (ok) {
+                    showSuccessAndNavigate(username);
+                    return true;
+                }
             }
             
         } catch (SQLException ex) {
